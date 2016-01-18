@@ -1,20 +1,22 @@
 metalsmith = require 'metalsmith'
 markdown   = require 'metalsmith-markdown'
-templates  = require 'metalsmith-templates'
+layouts    = require 'metalsmith-layouts'
 handlebars = require 'handlebars'
-fs = require 'fs'
-
+fs         = require 'fs'
 
 ROOT_PATH = __dirname
 BUILD_PATH = ROOT_PATH + '/build'
 TEMPLATE_PATH = ROOT_PATH + '/templates'
-TEMPLATE_PARTIAL_PATH = TEMPLATE_PATH + '/partials'
 
-handlebars.registerPartial 'header', fs.readFileSync(TEMPLATE_PARTIAL_PATH + '/header.tpl').toString()
-handlebars.registerPartial 'footer', fs.readFileSync(TEMPLATE_PARTIAL_PATH + '/footer.tpl').toString()
+# metalsmith-layouts
+optLayouts =
+  engine: 'handlebars'
+  directory: TEMPLATE_PATH + '/layouts'
+  partials: TEMPLATE_PATH + '/partials'
+  default: 'default.hbs'
 
 metalsmith(__dirname)
   .use markdown()
-  .use templates 'handlebars'
+  .use layouts optLayouts
   .destination BUILD_PATH
   .build()
